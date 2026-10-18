@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subnauticus RPG — Mesa Virtual</title>
+<style>
+:root{--bg:#16090d;--panel:#2a1118;--panel2:#3a1720;--line:#63313d;--text:#fff1f2;--muted:#d3b2b8;--teal:#ef7183;--gold:#f2b6a3;--red:#ff7777}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#4b1c27 0%,#16090d 65%);color:var(--text);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;min-height:100vh}
+header{padding:26px clamp(18px,5vw,64px);border-bottom:1px solid #63313d88;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:13px}.logo{width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,var(--teal),#a8374e);display:grid;place-items:center;color:#32131b;font-size:25px;font-weight:900;box-shadow:0 8px 30px #ef718333}
+h1{font-size:clamp(21px,3vw,30px);margin:0;letter-spacing:.3px}.subtitle{color:var(--muted);font-size:13px;margin-top:4px}.status{border:1px solid var(--line);border-radius:999px;padding:8px 12px;color:var(--teal);font-size:12px}
+main{max-width:1280px;margin:auto;padding:28px clamp(14px,4vw,48px) 60px}.intro{margin-bottom:25px}.eyebrow{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);font-weight:800}.intro h2{font-size:clamp(25px,4vw,38px);margin:8px 0}.intro p{color:var(--muted);max-width:700px;line-height:1.6;margin:0}
+.layout{display:grid;grid-template-columns:minmax(300px,.9fr) minmax(0,1.35fr);gap:20px;align-items:start}.stack{display:grid;gap:20px}.panel{background:linear-gradient(145deg,#2a1118f5,#211017fa);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 15px 45px #0002}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}.panel h3{margin:0;font-size:18px}.small{font-size:12px;color:var(--muted)}.dice-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:15px 0}.die{background:#421c27;border:1px solid #713543;color:var(--text);border-radius:12px;padding:12px 4px;cursor:pointer;transition:.15s}.die strong{display:block;font-size:19px}.die span{display:block;font-size:10px;color:var(--muted);margin-top:3px}.die:hover,.die.active{border-color:var(--teal);background:#572430;transform:translateY(-1px)}label{display:block;font-size:12px;color:var(--muted);margin-bottom:7px}input,textarea,select{width:100%;background:#1b0d12;border:1px solid #63313d;color:var(--text);border-radius:10px;padding:11px 12px;font:inherit;outline:none}input:focus,textarea:focus,select:focus{border-color:var(--teal)}textarea{resize:vertical;min-height:85px}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{margin-bottom:13px}.field.full{grid-column:1/-1}.row{display:flex;gap:10px;align-items:end}.row>*{flex:1}.btn{border:0;border-radius:11px;padding:12px 15px;font-weight:800;cursor:pointer;transition:.15s;font:inherit;font-size:13px}.btn-primary{background:var(--teal);color:#32131b}.btn-primary:hover{filter:brightness(1.08);transform:translateY(-1px)}.btn-secondary{background:#48202b;border:1px solid #703544;color:var(--text)}.btn-danger{background:#3b2229;border:1px solid #75404b;color:#ffb4b4}.btn:disabled{opacity:.4;cursor:not-allowed}.roll-result{margin-top:17px;border:1px solid #9c4051;background:linear-gradient(135deg,#3d1822,#2b1219);border-radius:16px;padding:17px;display:none}.roll-result.show{display:block}.result-top{display:flex;justify-content:space-between;gap:10px;align-items:center}.result-number{font-size:42px;line-height:1.2;font-weight:900;color:var(--teal)}.result-breakdown{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.6;overflow-wrap:anywhere}.history{display:grid;gap:8px;max-height:240px;overflow:auto}.history-item{display:flex;justify-content:space-between;gap:10px;align-items:center;background:#1d0e13;border:1px solid #51232f;padding:10px 12px;border-radius:11px}.history-item strong{font-size:13px}.history-item span{font-size:12px;color:var(--muted)}.empty{color:var(--muted);font-size:13px;text-align:center;padding:22px 8px;border:1px dashed #31515b;border-radius:12px}
+.sheet-list{display:grid;gap:12px}.sheet-card{border:1px solid #2a4e5a;background:#0b202a;border-radius:15px;padding:15px}.sheet-top{display:flex;justify-content:space-between;gap:10px;align-items:start}.sheet-name{font-weight:850;font-size:16px}.sheet-meta{color:var(--muted);font-size:12px;margin-top:4px}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:13px 0}.stat{background:#153541;border-radius:9px;padding:8px;text-align:center}.stat span{display:block;font-size:10px;color:var(--muted);text-transform:uppercase}.stat strong{font-size:16px}.sheet-notes{font-size:12px;color:#bdd2d4;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}.card-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.card-actions .btn{padding:8px 10px;font-size:11px}.divider{border:0;border-top:1px solid #572a36;margin:18px 0}.hint{font-size:11px;color:var(--muted);line-height:1.5;margin-top:13px}.toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#fff0f2;color:#32131b;padding:11px 16px;border-radius:12px;font-weight:700;font-size:13px;transition:.2s;box-shadow:0 8px 30px #0005}.toast.show{opacity:1;transform:translate(-50%,0)}footer{text-align:center;color:#72939b;font-size:11px;padding:20px}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.dice-grid{grid-template-columns:repeat(4,1fr)}}@media(max-width:460px){.panel{padding:16px}.fields{grid-template-columns:1fr}.field.full{grid-column:auto}.dice-grid{gap:6px}.die{padding:10px 2px}.stats{grid-template-columns:repeat(2,1fr)}header{align-items:flex-start}}
+
+/* Ficha em estilo de tabela de RPG: molduras fortes, caixas e seções compactas */
+#sheetFormPanel{background:#f4f3ef;color:#171717;border:3px solid #171717;border-radius:5px;box-shadow:7px 7px 0 #0003;padding:0;overflow:hidden}
+#sheetFormPanel .panel-head{background:#171717;color:#f7f5ef;margin:0;padding:17px 20px;border-bottom:3px solid #ef7183}
+#sheetFormPanel .panel-head .small{color:#a9d8d0}
+#sheetForm{padding:20px}
+#sheetForm .divider{border-top:2px solid #171717;margin:20px 0 15px}
+#sheetForm .panel-head{background:#dcdad2;color:#171717;border:2px solid #171717;margin:0 0 14px;padding:10px 12px}
+#sheetForm .panel-head .small{color:#454545}
+#sheetForm label{color:#262626;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px}
+#sheetForm input,#sheetForm textarea,#sheetForm select{background:#fff;color:#151515;border:1.5px solid #292929;border-radius:2px;padding:10px;font-size:13px}
+#sheetForm input:focus,#sheetForm textarea:focus{border-color:#148f7a;box-shadow:0 0 0 2px #ef718333}
+#sheetForm .field{margin-bottom:10px}
+#sheetForm .fields{gap:0 10px}
+#sheetForm .field.full{grid-column:1/-1}
+#sheetForm .hint{color:#555}
+#sheetForm .btn-primary{background:#171717;color:#fff;border:2px solid #171717;border-radius:2px}
+#sheetForm .btn-secondary{background:#e1dfd7;color:#171717;border:2px solid #171717;border-radius:2px}
+#sheetFormPanel>p.hint{margin:0;padding:0 20px 18px;color:#555}
+#sheetForm .field:has(textarea){border:1.5px solid #292929;background:#e8e6df;padding:9px 9px 0}
+#sheetForm textarea{min-height:75px}
+#skillsFields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 10px;padding:12px;border:2px solid #171717;background:#e6e4dd}
+#skillsFields .field{display:grid;grid-template-columns:minmax(0,1fr) 90px;align-items:center;gap:8px;border-bottom:1px solid #aaa;margin:0;padding:5px 0}
+#skillsFields label{margin:0;font-size:9px}
+#skillsFields input{padding:7px;font-size:12px}
+#sheetList .sheet-card{background:#f4f3ef;color:#171717;border:2px solid #171717;border-radius:4px;box-shadow:4px 4px 0 #0002}
+#sheetList .sheet-meta,#sheetList .sheet-notes{color:#333}
+#sheetList .stat{background:#dedcd4;border:1px solid #333;border-radius:2px}
+#sheetList .stat span{color:#444}
+#sheetList .card-actions .btn{border-radius:2px}
+@media(max-width:520px){#sheetForm{padding:13px}#skillsFields{grid-template-columns:1fr}#sheetForm .fields{grid-template-columns:repeat(2,minmax(0,1fr))}#sheetForm .field.full{grid-column:1/-1}#skillsFields .field{grid-template-columns:minmax(0,1fr) 82px}}
+
+
+/* Character sheet: printable, table-like layout inspired by the supplied references */
+.sheet-form-layout{display:grid;grid-template-columns:1.02fr 1.3fr 1.02fr;gap:10px;align-items:stretch}
+.sheet-column{display:grid;gap:10px;align-content:start}
+.sheet-block{border:2px solid #18242a;background:#f7f7f4;color:#111;border-radius:3px;padding:10px;box-shadow:3px 3px 0 #18242a}
+.sheet-block-title{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:1px;border-bottom:2px solid #18242a;padding-bottom:6px;margin-bottom:8px;color:#111}
+.sheet-form-layout label{color:#222;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px}
+.sheet-form-layout input,.sheet-form-layout textarea,.sheet-form-layout select{background:#fff;color:#111;border:1px solid #737b7e;border-radius:0;padding:7px;font-size:12px}
+.sheet-form-layout input:focus,.sheet-form-layout textarea:focus{border-color:#111;box-shadow:inset 0 0 0 1px #111}
+.sheet-form-layout .field{margin-bottom:7px}
+.sheet-form-layout .fields{gap:7px}
+.sheet-form-layout textarea{min-height:62px}
+.sheet-identity{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:7px}
+.sheet-stats-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.sheet-stat-input{border:2px solid #172329;padding:7px;background:#fff}
+.sheet-stat-input label{text-align:center;display:block}
+.sheet-stat-input input{text-align:center;font-size:18px;font-weight:900;border:0;border-top:1px solid #a3a8aa;margin-top:4px;padding:5px}
+.sheet-skills-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 8px}
+.sheet-skills-grid .field{margin:0;display:grid;grid-template-columns:minmax(0,1fr) 58px;gap:5px;align-items:center}
+.sheet-skills-grid label{margin:0;font-size:9px;line-height:1.2}
+.sheet-skills-grid input{padding:6px;text-align:center}
+.sheet-attributes{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.sheet-vitals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.sheet-vitals .field{margin:0}
+.sheet-vitals input{text-align:center;font-weight:800}
+.sheet-bottom{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sheet-form-layout .divider{border-color:#8b9294;margin:10px 0}
+.sheet-form-layout .hint{color:#454b4e}
+.sheet-form-layout .sheet-wide{grid-column:1/-1}
+.sheet-form-layout .sheet-actions{grid-column:1/-1;display:flex;gap:10px}
+.sheet-form-layout .sheet-actions .btn{flex:1}
+@media(max-width:980px){.sheet-form-layout{grid-template-columns:1fr 1fr}.sheet-column:last-of-type{grid-column:1/-1}.sheet-skills-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.sheet-form-layout{grid-template-columns:1fr}.sheet-column:last-of-type{grid-column:auto}.sheet-identity{grid-template-columns:1fr 1fr}.sheet-identity .field:first-child{grid-column:1/-1}.sheet-bottom{grid-template-columns:1fr}.sheet-skills-grid{grid-template-columns:1fr 1fr}}
+@media print{body{background:#fff}.sheet-form-layout{grid-template-columns:1fr 1.3fr 1fr}.sheet-block{box-shadow:none;break-inside:avoid}.sheet-form-layout input,.sheet-form-layout textarea{background:#fff}}
+
+
+.attribute-wheel-wrap{display:grid;grid-template-columns:minmax(190px,1fr);justify-items:center;gap:10px}
+.attribute-wheel{width:100%;max-width:360px;overflow:visible;display:block}
+.attribute-wheel polygon.grid{fill:none;stroke:#9ca7aa;stroke-width:1.2}
+.attribute-wheel line.axis{stroke:#59666b;stroke-width:1.2}
+.attribute-wheel polygon.value-area{fill:#ef7183;fill-opacity:.48;stroke:#b23750;stroke-width:2.5;stroke-linejoin:round}
+.attribute-wheel circle.point{fill:#8f2b41;stroke:#fff;stroke-width:1.5}
+.attribute-wheel text{font-size:11px;font-weight:800;fill:currentColor}
+.attribute-wheel .label-top{font-size:12px}
+.wheel-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;width:100%}
+.wheel-controls .field{margin:0;border:1px solid #a5adaf;background:#fff;padding:6px}
+.wheel-controls label{font-size:9px;text-align:center}
+.wheel-controls input{font-size:13px;text-align:center;font-weight:800;padding:5px}
+@media(max-width:600px){.wheel-controls{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+
+/* Navegação e hierarquia das áreas do sistema */
+html{scroll-behavior:smooth;scroll-padding-top:24px}
+.skip-link{position:fixed;z-index:20;top:10px;left:10px;transform:translateY(-150%);padding:10px 14px;background:var(--teal);color:#32131b;border-radius:10px;font-weight:800}
+.skip-link:focus{transform:translateY(0)}
+.system-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:0 0 26px;padding:10px;border:1px solid #63313d;border-radius:18px;background:#091d27cc}
+.system-nav a{display:flex;align-items:center;gap:11px;min-width:0;padding:12px 14px;border:1px solid transparent;border-radius:12px;color:var(--text);text-decoration:none;transition:background .18s,border-color .18s,transform .18s}
+.system-nav a:hover,.system-nav a:focus-visible{background:#3a1720;border-color:#3a7078;transform:translateY(-1px);outline:none}
+.system-nav a.is-active{background:#4b1d29;border-color:#ef718388}
+.nav-index{display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;border-radius:10px;background:#421c27;color:var(--teal);font-size:11px;font-weight:900}
+.system-nav strong,.system-nav small{display:block}.system-nav strong{font-size:13px}.system-nav small{margin-top:3px;color:var(--muted);font-size:10px}
+.system-stack{gap:14px}.stack-heading{display:flex;align-items:center;gap:12px;padding:0 4px 2px}.stack-number{display:grid;place-items:center;flex:0 0 38px;width:38px;height:38px;border:1px solid #ef718366;border-radius:12px;background:#35151e;color:var(--teal);font-size:12px;font-weight:900}.stack-heading strong,.stack-heading small{display:block}.stack-heading strong{font-size:14px;letter-spacing:.3px}.stack-heading small{margin-top:3px;color:var(--muted);font-size:11px}.stack-rule{height:1px;flex:1;margin-left:6px;background:linear-gradient(90deg,#8c394b,#63313d33)}
+#diceSection,#historySection,#charactersSection{scroll-margin-top:20px}
+#diceSection{border-top:3px solid #ef7183}#historySection{border-top:3px solid #f3c76a}#sheetFormPanel{scroll-margin-top:20px}#charactersSection{border-top:3px solid #66a9df}
+.panel-head{padding-bottom:13px;border-bottom:1px solid #63313d88}
+.die:focus-visible,.btn:focus-visible,.system-nav a:focus-visible{outline:3px solid #f3c76a;outline-offset:3px}
+#sheetFormPanel .panel-head{border-bottom:3px solid var(--teal)}
+#sheetFormPanel .sheet-block{transition:box-shadow .18s,transform .18s}
+#sheetFormPanel .sheet-block:hover{box-shadow:4px 4px 0 #18242a;transform:translateY(-1px)}
+@media(max-width:850px){.system-nav{grid-template-columns:repeat(2,minmax(0,1fr));margin-bottom:20px}.layout{gap:26px}.stack-heading{margin-top:0}}
+@media(max-width:520px){.system-nav{gap:6px;padding:7px;border-radius:14px}.system-nav a{gap:8px;padding:10px 8px}.system-nav small{font-size:9px}.nav-index{flex-basis:30px;width:30px;height:30px}.stack-heading{gap:9px}.system-stack{gap:12px}.panel-head{align-items:flex-start}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
+
+
+/* Identidade visual carmesim */
+body{background:radial-gradient(ellipse at top,#4b1c27 0%,#16090d 65%)}
+header{border-bottom-color:#63313d99}
+.system-nav{border-color:#63313d;background:#1b0d12dd}
+.system-nav a:hover,.system-nav a:focus-visible{background:#3a1720;border-color:#8c394b}
+.system-nav a.is-active{background:#4b1d29;border-color:#ef718388}
+.system-nav small,.stack-heading small{color:#d3b2b8}
+.stack-rule{background:linear-gradient(90deg,#8c394b,#63313d33)}
+.panel{background:linear-gradient(145deg,#2a1118f5,#211017fa);border-color:#63313d}
+.die{background:#421c27;border-color:#713543}
+.die:hover,.die.active{background:#572430;border-color:#ef7183}
+input,textarea,select{background:#1b0d12;border-color:#63313d}
+.btn-secondary{background:#48202b;border-color:#703544}
+.history-item{background:#1d0e13;border-color:#51232f}
+#diceSection{border-top-color:#ef7183}#historySection{border-top-color:#f2b6a3}#charactersSection{border-top-color:#b23750}
+#sheetFormPanel .panel-head{border-bottom-color:#ef7183}
+.attribute-wheel polygon.value-area{fill:#ef7183;stroke:#b23750}
+.attribute-wheel circle.point{fill:#8f2b41}
+.toast{background:#fff0f2;color:#32131b}
+@media(max-width:850px){.system-nav{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+
+/* Ficha carmesim inspirada na referência */
+#sheetFormPanel{
+  color:#f8e8eb;
+  background:linear-gradient(145deg,#35111c 0%,#210b12 100%);
+  border:2px solid #a34257;
+  border-radius:14px;
+  box-shadow:0 0 0 4px #1c080e,0 14px 40px #0007,inset 0 0 0 1px #e08b9a55;
+}
+#sheetFormPanel .panel-head{
+  background:linear-gradient(100deg,#200910,#501827 55%,#280c15);
+  color:#fff0f2;
+  border-bottom:2px solid #d86d80;
+}
+#sheetFormPanel .panel-head .small{color:#e9a6b1}
+#sheetForm{background:linear-gradient(180deg,#2a0e17,#200b12);}
+#sheetForm .sheet-block{
+  position:relative;
+  overflow:hidden;
+  color:#f9e9ec;
+  background:linear-gradient(145deg,#431725,#2c0e18 78%);
+  border:1px solid #984052;
+  border-radius:9px;
+  box-shadow:inset 0 0 0 1px #e18a9922,0 4px 12px #12050a66;
+}
+#sheetForm .sheet-block::after{
+  content:"";
+  position:absolute;
+  top:0;right:0;
+  width:48px;height:48px;
+  pointer-events:none;
+  opacity:.32;
+  background:radial-gradient(circle at 100% 0,transparent 0 13px,#df879733 14px 15px,transparent 16px 23px,#df879722 24px 25px,transparent 26px);
+}
+#sheetForm .sheet-block-title{
+  position:relative;
+  z-index:1;
+  color:#ffdce2;
+  border-bottom:1px solid #a5485d;
+  letter-spacing:1.2px;
+  text-shadow:0 1px 8px #f0677c33;
+}
+#sheetForm .sheet-block-title::before{content:"✦  ";color:#e58b9b}
+#sheetForm .sheet-form-layout label,
+#sheetForm label{color:#e8c2ca}
+#sheetForm input,#sheetForm textarea,#sheetForm select{
+  color:#fff1f3;
+  background:#1d0a11;
+  border:1px solid #854051;
+  border-radius:5px;
+  box-shadow:inset 0 1px 4px #0005;
+}
+#sheetForm input::placeholder,#sheetForm textarea::placeholder{color:#b98b94;opacity:1}
+#sheetForm input:focus,#sheetForm textarea:focus,#sheetForm select:focus{
+  border-color:#ed8294;
+  box-shadow:0 0 0 2px #ed829433,inset 0 1px 4px #0005;
+}
+#sheetForm .sheet-stat-input{background:#250c15;border-color:#b04a60}
+#sheetForm .sheet-stat-input input{color:#fff0f2;border-top-color:#854051;background:transparent}
+#sheetForm .sheet-vitals input{background:#1d0a11;color:#fff1f3}
+#skillsFields{
+  background:#260d16;
+  border:1px solid #8f3c50;
+  border-radius:7px;
+}
+#skillsFields .field{border-bottom-color:#6e3040}
+#skillsFields label{color:#e8c2ca}
+#skillsFields input{background:#1b0910;color:#fff1f3;border-color:#713444}
+#sheetForm .sheet-skills-grid .field{border-bottom:1px solid #6e3040}
+#sheetForm .wheel-controls .field{background:#280e18;border-color:#8f3c50;border-radius:5px}
+#sheetForm .wheel-controls label{color:#e8c2ca}
+#sheetForm .wheel-controls input{background:#1b0910;color:#fff1f3}
+#sheetForm .attribute-wheel polygon.grid{stroke:#9a6974}
+#sheetForm .attribute-wheel line.axis{stroke:#bf8993}
+#sheetForm .attribute-wheel text{fill:#f4dce0}
+#sheetForm .attribute-wheel polygon.value-area{fill:#d75570;fill-opacity:.48;stroke:#f08a9b}
+#sheetForm .attribute-wheel circle.point{fill:#ef7183;stroke:#fff0f2}
+#sheetForm .divider{border-top-color:#834052}
+#sheetForm .hint,#sheetFormPanel>p.hint{color:#d5aab3}
+#sheetForm .btn-primary{background:linear-gradient(135deg,#d7546d,#8f263e);color:#fff5f6;border:1px solid #f08a9b;box-shadow:0 4px 12px #12050a66}
+#sheetForm .btn-secondary{background:#35121e;color:#f8e8eb;border:1px solid #a5485d}
+#sheetForm .btn-primary:hover,#sheetForm .btn-secondary:hover{filter:brightness(1.12)}
+#sheetList .sheet-card{
+  color:#f8e8eb;
+  background:linear-gradient(145deg,#3a1420,#260c15);
+  border:1px solid #994153;
+  border-radius:10px;
+  box-shadow:inset 0 0 0 1px #e18a9922,0 5px 14px #0004;
+}
+#sheetList .sheet-name{color:#fff0f2}
+#sheetList .sheet-meta,#sheetList .sheet-notes{color:#e2bdc5}
+#sheetList .stat{background:#1e0a12;color:#fff0f2;border:1px solid #713344;border-radius:6px}
+#sheetList .stat span{color:#d8aab4}
+#sheetList .card-actions .btn-secondary{background:#35121e;color:#f8e8eb;border:1px solid #a5485d}
+#sheetList .card-actions .btn-danger{background:#501726;color:#ffdce2;border-color:#b2475c}
+#sheetFormPanel>p.hint{padding-top:0}
+@media(max-width:600px){#sheetForm .sheet-block{padding:9px}#sheetFormPanel{box-shadow:0 0 0 2px #1c080e,0 10px 26px #0007}}
+
+
+/* Ornamentos fluidos e dado animado */
+#sheetFormPanel .panel-head{background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20360%20240%22%3E%3Cg%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20opacity%3D%22.34%22%3E%3Cpath%20stroke%3D%22%23ff4b2b%22%20stroke-width%3D%224%22%20d%3D%22M360%2014c-48-8-48%2041-91%2050-42%208-49-32-24-42%2019-7%2032%2011%2019%2022-7%206-17%202-14-6M354%20102c-39-26-71%202-49%2028%2017%2020%2049%205%2037-12-6-8-19-3-15%205M0%20168c40-19%2024-61%2061-78%2037-17%2059%2018%2036%2038-15%2014-37%201-27-14%206-9%2020-7%2019%203M130%20240c-4-38%2039-41%2050-69%2011-28-18-43-34-27-11%2011-3%2027%209%2023%208-3%208-13%201-14%22%2F%3E%3Cpath%20stroke%3D%22%23e13e5c%22%20stroke-width%3D%222%22%20d%3D%22M360%2034c-72%205-47%2076-110%2082-28%202-40-24-24-36M336%200c-30%2038-9%2062-39%2081M0%20196c62-18%2037-87%20100-101%2024-6%2044%207%2041%2025M84%20240c2-43%2053-48%2068-84%22%2F%3E%3Cpath%20stroke%3D%22%23ff8a45%22%20stroke-width%3D%221.5%22%20d%3D%22M360%2062c-38-2-36%2039-74%2047-30%206-42-13-31-26M308%20240c-38-17-12-45%207-54%2015-7%2025-23%2012-34M0%20136c28%205%2042-16%2044-36%202-18%2022-31%2040-24%22%2F%3E%3C%2Fg%3E%3Cg%20fill%3D%22%23ff8256%22%20opacity%3D%22.4%22%3E%3Ccircle%20cx%3D%22316%22%20cy%3D%2238%22%20r%3D%222%22%2F%3E%3Ccircle%20cx%3D%22285%22%20cy%3D%22193%22%20r%3D%221.7%22%2F%3E%3Ccircle%20cx%3D%2246%22%20cy%3D%22188%22%20r%3D%222%22%2F%3E%3Ccircle%20cx%3D%22156%22%20cy%3D%2240%22%20r%3D%221.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E"),linear-gradient(100deg,#200910,#501827 55%,#280c15);background-position:right center,center;background-size:220px 150px,cover;background-repeat:no-repeat}
+#sheetForm{background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20360%20240%22%3E%3Cg%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20opacity%3D%22.34%22%3E%3Cpath%20stroke%3D%22%23ff4b2b%22%20stroke-width%3D%224%22%20d%3D%22M360%2014c-48-8-48%2041-91%2050-42%208-49-32-24-42%2019-7%2032%2011%2019%2022-7%206-17%202-14-6M354%20102c-39-26-71%202-49%2028%2017%2020%2049%205%2037-12-6-8-19-3-15%205M0%20168c40-19%2024-61%2061-78%2037-17%2059%2018%2036%2038-15%2014-37%201-27-14%206-9%2020-7%2019%203M130%20240c-4-38%2039-41%2050-69%2011-28-18-43-34-27-11%2011-3%2027%209%2023%208-3%208-13%201-14%22%2F%3E%3Cpath%20stroke%3D%22%23e13e5c%22%20stroke-width%3D%222%22%20d%3D%22M360%2034c-72%205-47%2076-110%2082-28%202-40-24-24-36M336%200c-30%2038-9%2062-39%2081M0%20196c62-18%2037-87%20100-101%2024-6%2044%207%2041%2025M84%20240c2-43%2053-48%2068-84%22%2F%3E%3Cpath%20stroke%3D%22%23ff8a45%22%20stroke-width%3D%221.5%22%20d%3D%22M360%2062c-38-2-36%2039-74%2047-30%206-42-13-31-26M308%20240c-38-17-12-45%207-54%2015-7%2025-23%2012-34M0%20136c28%205%2042-16%2044-36%202-18%2022-31%2040-24%22%2F%3E%3C%2Fg%3E%3Cg%20fill%3D%22%23ff8256%22%20opacity%3D%22.4%22%3E%3Ccircle%20cx%3D%22316%22%20cy%3D%2238%22%20r%3D%222%22%2F%3E%3Ccircle%20cx%3D%22285%22%20cy%3D%22193%22%20r%3D%221.7%22%2F%3E%3Ccircle%20cx%3D%2246%22%20cy%3D%22188%22%20r%3D%222%22%2F%3E%3Ccircle%20cx%3D%22156%22%20cy%3D%2240%22%20r%3D%221.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E"),linear-gradient(180deg,#2a0e17,#200b12);background-position:right 12px top 12px,center;background-size:min(420px,78%) auto,cover;background-repeat:no-repeat}
+#sheetForm .sheet-block,#sheetList .sheet-card{background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20360%20240%22%3E%3Cg%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20opacity%3D%22.34%22%3E%3Cpath%20stroke%3D%22%23ff4b2b%22%20stroke-width%3D%224%22%20d%3D%22M360%2014c-48-8-48%2041-91%2050-42%208-49-32-24-42%2019-7%2032%2011%2019%2022-7%206-17%202-14-6M354%20102c-39-26-71%202-49%2028%2017%2020%2049%205%2037-12-6-8-19-3-15%205M0%20168c40-19%2024-61%2061-78%2037-17%2059%2018%2036%2038-15%2014-37%201-27-14%206-9%2020-7%2019%203M130%20240c-4-38%2039-41%2050-69%2011-28-18-43-34-27-11%2011-3%2027%209%2023%208-3%208-13%201-14%22%2F%3E%3Cpath%20stroke%3D%22%23e13e5c%22%20stroke-width%3D%222%22%20d%3D%22M360%2034c-72%205-47%2076-110%2082-28%202-40-24-24-36M336%200c-30%2038-9%2062-39%2081M0%20196c62-18%2037-87%20100-101%2024-6%2044%207%2041%2025M84%20240c2-43%2053-48%2068-84%22%2F%3E%3Cpath%20stroke%3D%22%23ff8a45%22%20stroke-width%3D%221.5%22%20d%3D%22M360%2062c-38-2-36%2039-74%2047-30%206-42-13-31-26M308%20240c-38-17-12-45%207-54%2015-7%2025-23%2012-34M0%20136c28%205%2042-16%2044-36%202-18%2022-31%2040-24%22%2F%3E%3C%2Fg%3E%3Cg%20fill%3D%22%23ff8256%22%20opacity%3D%22.4%22%3E%3Ccircle%20cx%3D%22316%22%20cy%3D%2238%22%20r%3D%222%22%2F%3E%3Ccircle%20cx%3D%22285%22%20cy%3D%22193%22%20r%3D%221.7%22%2F%3E%3Ccircle%20cx%3D%2246%22%20cy%3D%22188%22%20r%3D%222%22%2F%3E%3Ccircle%20cx%3D%22156%22%20cy%3D%2240%22%20r%3D%221.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E"),linear-gradient(145deg,#431725,#2c0e18 78%);background-position:right top,center;background-size:145px 100px,cover;background-repeat:no-repeat}
+#sheetForm .sheet-block-title::before{content:"❧  ✦  ";color:#ff8156}
+#sheetFormPanel .panel-head h3{text-shadow:0 0 12px #ff5d3d55}
+.roll-die-stage{display:grid;justify-items:center;gap:5px;flex:0 0 76px}
+.roll-die{position:relative;display:grid;place-items:center;width:62px;height:62px;overflow:hidden;border:2px solid #ff9a79;border-radius:15px;background:linear-gradient(145deg,#ff6348 0%,#c22a45 48%,#350d1c 100%);color:#fff6ed;box-shadow:inset 4px 4px 0 #ffd3a333,inset -5px -5px 0 #15060d99,0 8px 18px #0008;transform:rotate(-5deg)}
+.roll-die::before,.roll-die::after{content:"";position:absolute;width:6px;height:6px;border-radius:50%;background:#ffe2c8;box-shadow:0 0 8px #ff9a79aa}
+.roll-die::before{top:8px;left:8px}.roll-die::after{right:8px;bottom:8px}
+#rollingFace{position:relative;z-index:1;font-size:23px;line-height:1;font-weight:950;text-shadow:0 2px 5px #5c1020;max-width:52px;overflow:hidden;text-overflow:clip}
+.roll-die-caption{color:#ffb09c;font-size:8px;font-weight:900;letter-spacing:1.2px}
+.roll-die.is-rolling{animation:diceTumble .9s cubic-bezier(.18,.72,.18,1) both}
+@keyframes diceTumble{0%{transform:perspective(420px) rotateX(0) rotateY(0) rotateZ(-5deg) scale(.78)}32%{transform:perspective(420px) rotateX(210deg) rotateY(270deg) rotateZ(135deg) scale(1.12)}68%{transform:perspective(420px) rotateX(470deg) rotateY(610deg) rotateZ(285deg) scale(1.08)}100%{transform:perspective(420px) rotateX(720deg) rotateY(900deg) rotateZ(355deg) scale(1)}}
+@media(prefers-reduced-motion:reduce){.roll-die.is-rolling{animation:none}}
+@media(max-width:460px){.roll-die-stage{flex-basis:66px}.roll-die{width:54px;height:54px;border-radius:13px}#rollingFace{font-size:20px}}
+
+
+/* Roda áurea geométrica: tipografia condensada, sem glifos ou runas */
+.attribute-wheel{border:1px solid #94732e;border-radius:50%;background:radial-gradient(circle at 50% 48%,#17130b 0%,#0c0b09 57%,#201807 58%,#0b0a08 72%,#1c1408 73%,#080807 100%);box-shadow:0 0 0 4px #090807,0 0 22px #d2a74228,inset 0 0 18px #d4aa4930;padding:4px;filter:drop-shadow(0 0 6px #d7ad4c30)}
+.attribute-wheel polygon.grid{fill:none;stroke:#8c7136;stroke-width:1;opacity:.62}
+.attribute-wheel polygon.wheel-outer-hex{fill:none;stroke:#d1aa52;stroke-width:1.2;opacity:.68}
+.attribute-wheel circle.wheel-outer-ring{fill:none;stroke:#d5b252;stroke-width:1.5;opacity:.82}
+.attribute-wheel circle.wheel-inner-ring{fill:none;stroke:#6c5425;stroke-width:1;opacity:.78}
+.attribute-wheel line.axis{stroke:#765f30;stroke-width:.9;opacity:.72}
+.attribute-wheel line.wheel-tick{stroke:#8c7136;stroke-width:.8;opacity:.72}
+.attribute-wheel line.wheel-tick.major{stroke:#f0cf77;stroke-width:1.4;opacity:.95}
+.attribute-wheel polygon.value-area{fill:url(#wheelGoldArea);stroke:#f0cb69;stroke-width:2.4;stroke-linejoin:round;filter:url(#wheelGoldGlow)}
+.attribute-wheel circle.point{fill:#fff0b4;stroke:#e9bf5b;stroke-width:1.8;filter:url(#wheelGoldGlow)}
+.attribute-wheel text.wheel-label{font-family:Impact,Haettenschweiler,'Arial Narrow','Liberation Sans Narrow',sans-serif;font-size:13px;font-stretch:condensed;font-weight:900;letter-spacing:1.6px;fill:url(#wheelGoldType);stroke:#181106;stroke-width:2.5px;paint-order:stroke fill;filter:url(#wheelGoldGlow)}
+.wheel-controls .field{background:#1b140a;border:1px solid #725a28;border-radius:5px}
+.wheel-controls label{color:#d8bd79;font-family:Impact,Haettenschweiler,'Arial Narrow','Liberation Sans Narrow',sans-serif;font-weight:800;letter-spacing:.8px}
+.wheel-controls input{background:#100d08;color:#fff0b4;border:1px solid #80652d}
+@media(max-width:600px){.attribute-wheel{padding:2px}}
+
+
+/* Contraste vermelho e amarelo da roda */
+.attribute-wheel{background:radial-gradient(circle at 50% 48%,#df2638 0%,#bd142b 56%,#f2474c 57%,#920d20 72%,#e42a3b 73%,#520914 100%);border-color:#ffd85e;box-shadow:0 0 0 4px #30060d,0 0 28px #f0203c66,inset 0 0 18px #ffb52c55;filter:drop-shadow(0 0 8px #fa364b66)}
+#sheetForm .attribute-wheel text.wheel-label{fill:#ffeb00;stroke:#5a1019;filter:drop-shadow(0 0 5px #ffe900bb)}
+.wheel-controls label{color:#ffeb00}
+
+
+/* Aro escuro e dourado da roda */
+.attribute-wheel{background:radial-gradient(circle at 50% 48%,#211a0e 0%,#110f0b 56%,#090807 100%);border:1px solid #9d7d34;box-shadow:0 0 0 4px #090807,0 0 25px #ddb84d44,inset 0 0 24px #d1a83c22;filter:drop-shadow(0 0 7px #e4c15c44)}
+.attribute-wheel circle.wheel-outer-ring{stroke:#f1d176;stroke-width:1.8;opacity:.92;filter:url(#wheelGoldGlow)}
+.attribute-wheel circle.wheel-inner-ring{stroke:#8d7134;opacity:.85}
+.attribute-wheel polygon.wheel-outer-hex{stroke:#d8b656;stroke-width:1.35;opacity:.86}
+.attribute-wheel line.wheel-tick.major{stroke:#ffe48a;stroke-width:1.5;opacity:1}
+.attribute-wheel polygon.grid{stroke:#9a7b3a;opacity:.68}
+#sheetForm .attribute-wheel text.wheel-label{fill:#ffeb00;stroke:#211607;filter:drop-shadow(0 0 5px #ffe900aa)}
+
+
+/* Apenas o aro interno da roda */
+.attribute-wheel{border:0;border-radius:0;background:transparent;box-shadow:none;filter:none}
+.attribute-wheel circle.wheel-inner-ring{stroke:#f1d176;stroke-width:1.8;opacity:.95;filter:url(#wheelGoldGlow)}
+
+
+/* Teia interna em tons avermelhados */
+.attribute-wheel polygon.grid{stroke:#a62b43;stroke-width:1.15;opacity:.88}
+.attribute-wheel line.axis{stroke:#762338;stroke-width:1;opacity:.92}
+.attribute-wheel polygon.value-area{fill:#a51e38;fill-opacity:.48;stroke:#ff6378;stroke-width:2.5;filter:drop-shadow(0 0 5px #e8324e88)}
+.attribute-wheel circle.point{fill:#ff4d68;stroke:#ffe1e1;stroke-width:1.8;filter:drop-shadow(0 0 5px #fa3155)}
+
+
+/* Área dinâmica amarela */
+#sheetForm .attribute-wheel polygon.value-area{fill:#ffdc00;fill-opacity:.58;stroke:#fff18a;stroke-width:2.6;filter:drop-shadow(0 0 7px #ffe000bb)}
+#sheetForm .attribute-wheel circle.point{fill:#fff39a;stroke:#fff8d8;stroke-width:1.8;filter:drop-shadow(0 0 6px #ffe000)}
+
+</style>
+</head>
+<body>
+<a class="skip-link" href="#mainContent">Pular para o conteúdo</a>
+<header>
+  <div class="brand"><div class="logo">✦</div><div><h1>SUBNAUTICUS <span style="color:var(--teal)">RPG</span></h1></div></div>
+</header>
+<main id="mainContent">
+  <nav class="system-nav" aria-label="Seções do sistema">
+    <a href="#diceSection"><span><strong>Rolador</strong><small>Faça seus testes</small></span></a>
+    <a href="#historySection"><span><strong>Histórico</strong><small>Veja as rolagens</small></span></a>
+    <a href="#sheetFormPanel"><span><strong>Nova ficha</strong><small>Crie ou edite</small></span></a>
+    <a href="#charactersSection"><span><strong>Personagens</strong><small>Fichas salvas</small></span></a>
+  </nav>
+  <div class="layout">
+    <div class="stack system-stack">
+      <div class="stack-heading"><div><strong>Ferramentas da mesa</strong><small>Rolagens e registros da sessão</small></div><span class="stack-rule"></span></div>
+      <section class="panel" id="diceSection">
+        <div class="panel-head"><h3>🎲 Rolador de dados</h3><span class="small">Escolha o dado</span></div>
+        <div class="dice-grid" id="diceGrid">
+          <button class="die active" data-die="4"><strong>d4</strong><span>4 faces</span></button>
+          <button class="die" data-die="6"><strong>d6</strong><span>6 faces</span></button>
+          <button class="die" data-die="8"><strong>d8</strong><span>8 faces</span></button>
+          <button class="die" data-die="10"><strong>d10</strong><span>10 faces</span></button>
+          <button class="die" data-die="12"><strong>d12</strong><span>12 faces</span></button>
+          <button class="die" data-die="20"><strong>d20</strong><span>20 faces</span></button>
+          <button class="die" data-die="100"><strong>d100</strong><span>100 faces</span></button>
+          <button class="die" data-die="2"><strong>d2</strong><span>Moeda</span></button>
+        </div>
+        <div class="fields">
+          <div class="field"><label for="quantity">Quantidade de dados</label><input id="quantity" type="number" min="1" max="50" value="1"></div>
+          <div class="field"><label for="modifier">Modificador (+ / −)</label><input id="modifier" type="number" value="0"></div>
+        </div>
+        <div class="field"><label for="rollLabel">Descrição (opcional)</label><input id="rollLabel" placeholder="Ex.: Teste de Pontaria"></div>
+        <button class="btn btn-primary" style="width:100%" id="rollBtn">⚄ Rolar dados</button>
+        <div class="roll-result" id="rollResult" aria-live="polite">
+          <div class="result-top"><div><div class="small" id="resultLabel">RESULTADO</div><div class="result-number" id="resultNumber">—</div></div><div class="roll-die-stage" aria-hidden="true"><div class="roll-die" id="rollDie"><span id="rollingFace">?</span></div><span class="roll-die-caption">DADO</span></div></div>
+          <div class="result-breakdown" id="resultBreakdown"></div>
+        </div>
+        <p class="hint">Dica: você pode rolar vários dados de uma vez e somar um modificador ao total.</p>
+      </section>
+      <section class="panel" id="historySection">
+        <div class="panel-head"><h3>📜 Histórico de rolagens</h3><button class="btn btn-secondary" id="clearHistory" style="padding:7px 10px;font-size:11px">Limpar</button></div>
+        <div class="history" id="history"><div class="empty">Suas rolagens aparecerão aqui.</div></div>
+      </section>
+    </div>
+    <div class="stack system-stack character-stack">
+      <div class="stack-heading"><div><strong>Gestão de personagens</strong><small>Ficha, atributos e coleção</small></div><span class="stack-rule"></span></div>
+      <section class="panel" id="sheetFormPanel">
+        <div class="panel-head"><h3>✦ FICHA DO AVENTUREIRO</h3><span class="small" id="formMode">NOVA FICHA</span></div>
+        <form id="sheetForm" class="sheet-form-layout">
+  <div class="sheet-column">
+    <div class="sheet-block">
+      <div class="sheet-block-title">Identificação do personagem</div>
+      <div class="field"><label for="charName">Nome do personagem *</label><input id="charName" required maxlength="70" placeholder="Nome do aventureiro"></div>
+      <div class="field"><label for="charPlayer">Jogador</label><input id="charPlayer" maxlength="70" placeholder="Nome do jogador"></div>
+      <div class="fields">
+        <div class="field"><label for="charAge">Idade</label><input id="charAge" placeholder="Idade"></div>
+        <div class="field"><label for="charLevel">Nível</label><input id="charLevel" type="number" min="1" max="999" value="1"></div>
+        <div class="field"><label for="charHeight">Altura</label><input id="charHeight" placeholder="Altura"></div>
+        <div class="field"><label for="charWeight">Peso</label><input id="charWeight" placeholder="Peso"></div>
+      </div>
+      <div class="field"><label for="charRace">Raça</label><input id="charRace" placeholder="Ex.: Marídeo"></div>
+      <div class="field"><label for="charClass">Classe</label><input id="charClass" placeholder="Ex.: Caçador de Leviatãs"></div>
+    </div>
+    <div class="sheet-block">
+      <div class="sheet-block-title">Recursos e combate</div>
+      <div class="sheet-vitals">
+        <div class="field"><label for="charLife">Vida</label><input id="charLife" placeholder="Atual / Máx."></div>
+        <div class="field"><label for="charEnergy">Pontos de Energia</label><input id="charEnergy" placeholder="Atual / Máx."></div>
+        <div class="field"><label for="charCA">CA</label><input id="charCA" type="number" min="0" value="5"></div>
+      </div>
+      <div class="field" style="margin-top:8px"><label for="charShells">Conchas</label><input id="charShells" type="number" min="0" value="0"></div>
+    </div>
+    <div class="sheet-block">
+      <div class="sheet-block-title">Anotações e história</div>
+      <div class="field"><label for="charNotes">História / mutação / corrupção</label><textarea id="charNotes" placeholder="História, objetivos, mutações, corrupção..."></textarea></div>
+      <div class="field"><label for="charTrainedSkills">Perícias treinadas</label><textarea id="charTrainedSkills" placeholder="Liste as perícias treinadas."></textarea></div>
+    </div>
+  </div>
+  <div class="sheet-column">
+    <div class="sheet-block">
+      <div class="sheet-block-title">Atributos principais</div>
+      <div class="attribute-wheel-wrap">
+        <svg class="attribute-wheel" id="attributeWheel" viewBox="0 0 340 330" role="img" aria-label="Gráfico radial dos seis atributos">
+          <defs><linearGradient id="wheelGoldType" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff2b0"/><stop offset="52%" stop-color="#e8bd5c"/><stop offset="100%" stop-color="#a87422"/></linearGradient><linearGradient id="wheelGoldArea" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f4d477" stop-opacity=".62"/><stop offset="100%" stop-color="#bd8029" stop-opacity=".28"/></linearGradient><filter id="wheelGoldGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.8" result="glow"/><feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+          <g id="wheelGrid"></g>
+          <polygon class="value-area" id="wheelValue" points=""></polygon>
+          <g id="wheelPoints"></g>
+          <g id="wheelLabels"></g>
+        </svg>
+        <div class="wheel-controls">
+          <div class="field"><label for="charStrength">Força · FOR</label><input id="charStrength" type="number" min="0" max="30" value="10"></div>
+          <div class="field"><label for="charDex">Destreza · DES</label><input id="charDex" type="number" min="0" max="30" value="10"></div>
+          <div class="field"><label for="charCon">Constituição · CON</label><input id="charCon" type="number" min="0" max="30" value="10"></div>
+          <div class="field"><label for="charWis">Sabedoria · SAB</label><input id="charWis" type="number" min="0" max="30" value="10"></div>
+          <div class="field"><label for="charEng">Engenharia · ENG</label><input id="charEng" type="number" min="0" max="30" value="10"></div>
+          <div class="field"><label for="charCha">Carisma · CAR</label><input id="charCha" type="number" min="0" max="30" value="10"></div>
+        </div>
+      </div>
+    </div>
+    <div class="sheet-block">
+      <div class="sheet-block-title">Perícias · bônus de teste</div>
+      <div class="sheet-skills-grid" id="skillsFields">
+        <div class="field"><label for="skillLuta">Luta (FOR)</label><input id="skillLuta" placeholder="Bônus"></div>
+        <div class="field"><label for="skillAtletismo">Atletismo (FOR)</label><input id="skillAtletismo" placeholder="Bônus"></div>
+        <div class="field"><label for="skillColera">Cólera (FOR)</label><input id="skillColera" placeholder="Bônus"></div>
+        <div class="field"><label for="skillIntimidacao">Intimidação (FOR)</label><input id="skillIntimidacao" placeholder="Bônus"></div>
+        <div class="field"><label for="skillReflexo">Reflexo (DES)</label><input id="skillReflexo" placeholder="Bônus"></div>
+        <div class="field"><label for="skillAcrobacia">Acrobacia (DES)</label><input id="skillAcrobacia" placeholder="Bônus"></div>
+        <div class="field"><label for="skillPontaria">Pontaria (DES)</label><input id="skillPontaria" placeholder="Bônus"></div>
+        <div class="field"><label for="skillIniciativa">Iniciativa (DES)</label><input id="skillIniciativa" placeholder="Bônus"></div>
+        <div class="field"><label for="skillLadinagem">Ladinagem (DES)</label><input id="skillLadinagem" placeholder="Bônus"></div>
+        <div class="field"><label for="skillFurtividade">Furtividade (DES)</label><input id="skillFurtividade" placeholder="Bônus"></div>
+        <div class="field"><label for="skillSobrevivencia">Sobrevivência (SAB)</label><input id="skillSobrevivencia" placeholder="Bônus"></div>
+        <div class="field"><label for="skillPercepcao">Percepção (SAB)</label><input id="skillPercepcao" placeholder="Bônus"></div>
+        <div class="field"><label for="skillMedicina">Medicina (SAB)</label><input id="skillMedicina" placeholder="Bônus"></div>
+        <div class="field"><label for="skillInvestigacao">Investigação (SAB)</label><input id="skillInvestigacao" placeholder="Bônus"></div>
+        <div class="field"><label for="skillNatureza">Natureza (SAB)</label><input id="skillNatureza" placeholder="Bônus"></div>
+        <div class="field"><label for="skillNavegacao">Navegação (SAB)</label><input id="skillNavegacao" placeholder="Bônus"></div>
+        <div class="field"><label for="skillEngenharia">Engenharia (ENG)</label><input id="skillEngenharia" placeholder="Bônus"></div>
+        <div class="field"><label for="skillOficio">Ofício / Reparos (ENG)</label><input id="skillOficio" placeholder="Bônus"></div>
+        <div class="field"><label for="skillPilotagem">Pilotagem (ENG)</label><input id="skillPilotagem" placeholder="Bônus"></div>
+        <div class="field"><label for="skillConhecimento">Conhecimento (SAB)</label><input id="skillConhecimento" placeholder="Bônus"></div>
+        <div class="field"><label for="skillPersuasao">Persuasão (CAR)</label><input id="skillPersuasao" placeholder="Bônus"></div>
+        <div class="field"><label for="skillAtuacao">Atuação (CAR)</label><input id="skillAtuacao" placeholder="Bônus"></div>
+        <div class="field"><label for="skillVontade">Vontade (CAR)</label><input id="skillVontade" placeholder="Bônus"></div>
+        <div class="field"><label for="skillAdestramento">Adestramento (CAR)</label><input id="skillAdestramento" placeholder="Bônus"></div>
+      </div>
+    </div>
+  </div>
+  <div class="sheet-column">
+    <div class="sheet-block">
+      <div class="sheet-block-title">Habilidades e traços</div>
+      <div class="field"><label for="charAbilities">Habilidades, passivas e talentos</label><textarea id="charAbilities" placeholder="Poderes raciais, habilidades de classe, talentos..."></textarea></div>
+      <div class="field"><label for="charEquipment">Equipamentos e inventário</label><textarea id="charEquipment" placeholder="Armas, armaduras, itens, munição e carga..."></textarea></div>
+    </div>
+  </div>
+  <div class="sheet-actions"><button type="submit" class="btn btn-primary" id="saveSheet">＋ Salvar ficha</button><button type="button" class="btn btn-secondary" id="cancelEdit" style="display:none">Cancelar</button></div>
+</form>
+        <p class="hint">As fichas ficam salvas localmente neste navegador. Exporte um backup para não perder seus personagens.</p>
+      </section>
+      <section class="panel" id="charactersSection">
+        <div class="panel-head"><h3>🗂️ Suas fichas</h3><span class="small" id="sheetCount">0 personagens</span></div>
+        <div class="sheet-list" id="sheetList"><div class="empty">Ainda não há fichas. Crie seu primeiro personagem acima.</div></div>
+        <hr class="divider">
+        <div class="row"><button class="btn btn-secondary" id="exportBtn">⇩ Exportar backup</button><button class="btn btn-secondary" id="importBtn">⇧ Importar backup</button><input id="importFile" type="file" accept="application/json,.json" hidden></div>
+        <p class="hint">O backup inclui as fichas salvas. Guarde o arquivo JSON em um local seguro.</p>
+      </section>
+    </div>
+  </div>
+</main>
+<footer>SUBNAUTICUS RPG · Feito para narradores e aventureiros · Seus dados permanecem no seu navegador</footer>
+<div class="toast" id="toast"></div>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const STORAGE_KEY = 'subnauticus_rpg_sheets_v1';
+  let selectedDie = 4, editingId = null, historyItems = [], dieSpinInterval = null, dieSpinTimeout = null;
+  let sheets = loadSheets();
+  function loadSheets(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]')}catch(e){return []}}
+  function persist(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(sheets))}catch(e){notify('Não foi possível salvar. Exporte um backup.');}}
+  function notify(msg){const el=$('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2300)}
+  function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+  function animateDie(finalValue){
+    const cube=$('rollDie'), face=$('rollingFace');
+    if(!cube||!face)return;
+    clearInterval(dieSpinInterval);clearTimeout(dieSpinTimeout);
+    cube.classList.remove('is-rolling');face.textContent=String(finalValue);
+    if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+    void cube.offsetWidth;cube.classList.add('is-rolling');
+    dieSpinInterval=setInterval(()=>{face.textContent=String(Math.floor(Math.random()*selectedDie)+1)},65);
+    dieSpinTimeout=setTimeout(()=>{clearInterval(dieSpinInterval);dieSpinInterval=null;dieSpinTimeout=null;cube.classList.remove('is-rolling');face.textContent=String(finalValue)},960);
+  }
+  $('diceGrid').addEventListener('click',e=>{const b=e.target.closest('[data-die]');if(!b)return;selectedDie=Number(b.dataset.die);document.querySelectorAll('.die').forEach(x=>x.classList.toggle('active',x===b))});
+  $('rollBtn').addEventListener('click',()=>{
+    const qty=Number($('quantity').value), mod=Number($('modifier').value)||0;
+    if(!Number.isInteger(qty)||qty<1||qty>50){notify('Escolha entre 1 e 50 dados.');return}
+    const rolls=Array.from({length:qty},()=>Math.floor(Math.random()*selectedDie)+1);
+    const subtotal=rolls.reduce((a,b)=>a+b,0), total=subtotal+mod, label=$('rollLabel').value.trim()||`${qty}d${selectedDie}`;
+    $('resultLabel').textContent=label.toLocaleUpperCase('pt-BR');
+    $('resultNumber').textContent=total;
+    $('resultBreakdown').textContent=`${qty}d${selectedDie}: [${rolls.join(', ')}] = ${subtotal}${mod===0?'':` ${mod>0?'+':'−'} ${Math.abs(mod)}`} · Total: ${total}`;
+    $('rollResult').classList.add('show');
+    animateDie(subtotal);
+    historyItems.unshift({label,formula:`${qty}d${selectedDie}${mod>0?'+':''}${mod||''}`,rolls,total,time:new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})});
+    historyItems=historyItems.slice(0,30);renderHistory();
+  });
+  function renderHistory(){
+    const el=$('history');
+    if(!historyItems.length){el.innerHTML='<div class="empty">Suas rolagens aparecerão aqui.</div>';return}
+    el.innerHTML=historyItems.map(h=>`<div class="history-item"><div><strong>${esc(h.label)}</strong><br><span>${esc(h.formula)} · ${esc(h.rolls.join(', '))} · ${h.time}</span></div><strong style="color:var(--teal);font-size:20px">${h.total}</strong></div>`).join('');
+  }
+  $('clearHistory').addEventListener('click',()=>{historyItems=[];renderHistory()});
+  const fieldIds=['charName','charPlayer','charAge','charHeight','charWeight','charRace','charClass','charLevel','charLife','charEnergy','charCA','charShells','charStrength','charDex','charCon','charWis','charEng','charCha','skillLuta','skillAtletismo','skillColera','skillIntimidacao','skillReflexo','skillAcrobacia','skillPontaria','skillIniciativa','skillLadinagem','skillFurtividade','skillSobrevivencia','skillPercepcao','skillMedicina','skillInvestigacao','skillNatureza','skillNavegacao','skillEngenharia','skillOficio','skillPilotagem','skillConhecimento','skillPersuasao','skillAtuacao','skillVontade','skillAdestramento','charTrainedSkills','charAbilities','charEquipment','charNotes'];
+  function readForm(){const s={id:editingId||(`${Date.now()}_${Math.random().toString(36).slice(2,8)}`),updatedAt:new Date().toISOString()};fieldIds.forEach(id=>s[id]=$(id).value.trim());return s}
+  function resetForm(){editingId=null;$('sheetForm').reset();$('charLevel').value=1;$('charLife').value='10 / 10';$('charEnergy').value='5 / 5';$('charCA').value=5;$('charShells').value=0;['charStrength','charDex','charCon','charWis','charEng','charCha'].forEach(id=>$(id).value=10);$('formMode').textContent='NOVA FICHA';$('saveSheet').textContent='＋ Salvar ficha';$('cancelEdit').style.display='none'}
+  $('sheetForm').addEventListener('submit',e=>{e.preventDefault();const s=readForm();if(editingId){const i=sheets.findIndex(x=>x.id===editingId);if(i>=0)sheets[i]=s}else sheets.unshift(s);persist();renderSheets();resetForm();notify('Ficha salva com sucesso!')});
+  $('cancelEdit').addEventListener('click',resetForm);
+  function renderSheets(){
+    $('sheetCount').textContent=`${sheets.length} ${sheets.length===1?'personagem':'personagens'}`;
+    const el=$('sheetList');
+    if(!sheets.length){el.innerHTML='<div class="empty">Ainda não há fichas. Crie seu primeiro personagem acima.</div>';return}
+    el.innerHTML=sheets.map(s=>`<article class="sheet-card">
+      <div class="sheet-top"><div><div class="sheet-name">${esc(s.charName||'Sem nome')}</div><div class="sheet-meta">${esc(s.charRace||'Raça não definida')} · ${esc(s.charClass||'Classe não definida')} · Nível ${esc(s.charLevel||'1')}${s.charPlayer?' · Jogador: '+esc(s.charPlayer):''}</div></div><span style="color:var(--gold);font-size:20px">✧</span></div>
+      <div class="stats"><div class="stat"><span>Vida</span><strong>${esc(s.charLife||'0')}</strong></div><div class="stat"><span>Energia</span><strong>${esc(s.charEnergy||'0')}</strong></div><div class="stat"><span>CA</span><strong>${esc(s.charCA||'0')}</strong></div><div class="stat"><span>Conchas</span><strong>${esc(s.charShells||'0')}</strong></div></div>
+      ${s.charTrainedSkills?`<div class="sheet-notes"><b>Perícias treinadas:</b> ${esc(s.charTrainedSkills)}</div>`:''}
+      ${s.charAbilities?`<div class="sheet-notes" style="margin-top:7px"><b>Habilidades:</b> ${esc(s.charAbilities)}</div>`:''}
+      ${s.charEquipment?`<div class="sheet-notes" style="margin-top:7px"><b>Equipamentos:</b> ${esc(s.charEquipment)}</div>`:''}
+      ${s.charNotes?`<div class="sheet-notes" style="margin-top:7px"><b>Anotações:</b> ${esc(s.charNotes)}</div>`:''}
+      <div class="card-actions"><button class="btn btn-secondary" data-action="edit" data-id="${esc(s.id)}">✎ Editar ficha</button><button class="btn btn-secondary" data-action="copy" data-id="${esc(s.id)}">⧉ Duplicar</button><button class="btn btn-danger" data-action="delete" data-id="${esc(s.id)}">Excluir</button></div>
+    </article>`).join('');
+  }
+  $('sheetList').addEventListener('click',e=>{
+    const b=e.target.closest('[data-action]');if(!b)return;const s=sheets.find(x=>x.id===b.dataset.id);if(!s)return;
+    if(b.dataset.action==='edit'){editingId=s.id;fieldIds.forEach(id=>$(id).value=s[id]??'');drawAttributeWheel();$('formMode').textContent='EDITANDO FICHA';$('saveSheet').textContent='✓ Atualizar ficha';$('cancelEdit').style.display='block';$('sheetFormPanel').scrollIntoView({behavior:'smooth',block:'start'});}
+    if(b.dataset.action==='copy'){const cp={...s,id:`${Date.now()}_${Math.random().toString(36).slice(2,8)}`,charName:(s.charName||'Personagem')+' (cópia)',updatedAt:new Date().toISOString()};sheets.unshift(cp);persist();renderSheets();notify('Ficha duplicada!')}
+    if(b.dataset.action==='delete'&&confirm(`Excluir a ficha de "${s.charName}"?`)){sheets=sheets.filter(x=>x.id!==s.id);persist();renderSheets();if(editingId===s.id)resetForm();notify('Ficha excluída.')}
+  });
+  $('exportBtn').addEventListener('click',()=>{const blob=new Blob([JSON.stringify({app:'Subnauticus RPG',version:1,sheets},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='subnauticus-backup.json';a.click();URL.revokeObjectURL(url);notify('Backup exportado!')});
+  $('importBtn').addEventListener('click',()=>$('importFile').click());
+  $('importFile').addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;try{const data=JSON.parse(await file.text());const incoming=Array.isArray(data)?data:data.sheets;if(!Array.isArray(incoming))throw new Error('Formato inválido');if(!confirm(`Importar ${incoming.length} ficha(s)? Elas serão adicionadas às fichas existentes.`))return;const normalized=incoming.filter(x=>x&&typeof x==='object').map(x=>({...x,id:`${Date.now()}_${Math.random().toString(36).slice(2,8)}`}));sheets=[...normalized,...sheets];persist();renderSheets();notify('Backup importado!')}catch(err){notify('Arquivo inválido. Selecione um backup JSON.')}finally{e.target.value=''}});
+
+  function drawAttributeWheel(){
+    const svgNS='http://www.w3.org/2000/svg';
+    const grid=$('wheelGrid'),value=$('wheelValue'),pts=$('wheelPoints'),labels=$('wheelLabels');
+    if(!grid||!value||!pts||!labels)return;
+    grid.innerHTML='';pts.innerHTML='';labels.innerHTML='';
+    const cx=170,cy=157,r=84,max=30;
+    const attrs=[
+      {id:'charStrength',label:'Força',short:'FOR'},
+      {id:'charDex',label:'Destreza',short:'DES'},
+      {id:'charCon',label:'Constituição',short:'CON'},
+      {id:'charCha',label:'Carisma',short:'CAR'},
+      {id:'charEng',label:'Engenharia',short:'ENG'},
+      {id:'charWis',label:'Sabedoria',short:'SAB'}
+    ];
+    const angle=i=>-Math.PI/2+i*Math.PI*2/6;
+    const xy=(i,rad)=>[cx+Math.cos(angle(i))*rad,cy+Math.sin(angle(i))*rad];
+    const node=(tag,attrs)=>{const el=document.createElementNS(svgNS,tag);Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v));return el};
+    const innerCircle=node('circle',{class:'wheel-inner-ring',cx,cy,r:116});grid.appendChild(innerCircle);
+    const outerHex=node('polygon',{class:'wheel-outer-hex',points:attrs.map((_,i)=>xy(i,111).join(',')).join(' ')});grid.appendChild(outerHex);
+    for(let ring=1;ring<=5;ring++){const polygon=node('polygon',{class:'grid',points:attrs.map((_,i)=>xy(i,r*ring/5).join(',')).join(' ')});grid.appendChild(polygon)}
+    attrs.forEach((a,i)=>{
+      const [x,y]=xy(i,r);grid.appendChild(node('line',{class:'axis',x1:cx,y1:cy,x2:x,y2:y}));
+      const v=Math.max(0,Math.min(max,Number($(a.id).value)||0));
+      const [vx,vy]=xy(i,r*v/max);
+      const [lx,ly]=xy(i,r+24);
+      const label=node('text',{class:'wheel-label',x:lx,y:ly+4,'text-anchor':Math.abs(lx-cx)<12?'middle':(lx<cx?'end':'start'),'aria-label':a.label});
+      label.textContent=a.short;const title=node('title',{});title.textContent=a.label;label.appendChild(title);labels.appendChild(label);
+      pts.appendChild(node('circle',{class:'point',cx:vx,cy:vy,r:4}));
+    });
+    value.setAttribute('points',attrs.map((a,i)=>{const v=Math.max(0,Math.min(max,Number($(a.id).value)||0));return xy(i,r*v/max).join(',')}).join(' '));
+  }
+  ['charStrength','charDex','charCon','charWis','charEng','charCha'].forEach(id=>$(id).addEventListener('input',drawAttributeWheel));
+  const oldResetForm=resetForm;
+  resetForm=function(){oldResetForm();drawAttributeWheel()};
+  const oldRenderSheets=renderSheets;
+  renderSheets=function(){oldRenderSheets();};
+  drawAttributeWheel();
+
+
+  const sectionLinks=[...document.querySelectorAll('.system-nav a')];
+  sectionLinks.forEach(link=>link.addEventListener('click',()=>{
+    sectionLinks.forEach(item=>{item.classList.remove('is-active');item.removeAttribute('aria-current')});
+    link.classList.add('is-active');link.setAttribute('aria-current','location');
+  }));
+  const initialSection=sectionLinks[0];
+  if(initialSection){initialSection.classList.add('is-active');initialSection.setAttribute('aria-current','location')}
+
+  renderSheets();renderHistory();
+})();
+</script>
+</body>
+</html>
